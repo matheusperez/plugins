@@ -78,7 +78,8 @@ class _StartAndEnd {
 // Parses a time stamp in an SubRip file into a Duration.
 // For example:
 //
-// _parseSubRipTimestamp('00:01:59,084')
+// _parseSubRipTimestamp('00:01:59,084') or
+// _parseSubRipTimestamp('00:01:59.084')
 // returns
 // Duration(hours: 0, minutes: 1, seconds: 59, milliseconds: 084)
 Duration _parseSubRipTimestamp(String timestampString) {
@@ -86,7 +87,9 @@ Duration _parseSubRipTimestamp(String timestampString) {
     return Duration.zero;
   }
 
-  final List<String> commaSections = timestampString.split(',');
+  final List<String> commaSections = (timestampString.contains('.')
+      ? timestampString.split('.')
+      : timestampString.split(','));
   final List<String> hoursMinutesSeconds = commaSections[0].split(':');
 
   final int hours = int.parse(hoursMinutesSeconds[0]);
@@ -127,5 +130,6 @@ List<List<String>> _readSubRipFile(String file) {
   return captionStrings;
 }
 
-const String _subRipTimeStamp = r'\d\d:\d\d:\d\d,\d\d\d';
+const String _subRipTimeStamp = r'\d\d:\d\d:\d\d(\.|,)\d\d\d';
+
 const String _subRipArrow = r' --> ';
